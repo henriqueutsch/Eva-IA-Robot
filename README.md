@@ -11,3 +11,9 @@ Voice command  your computer<br>
 Falta:<br>
 1 - Comentar o código<br>
 2 - Separar código em vários arquivos <br>
+
+Iniciando
+
+Instale EVA com a seguinte linha de comando:
+
+<pre><code>gem install eva-ia-robot</code></pre>

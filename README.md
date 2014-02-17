@@ -10,7 +10,7 @@ Voice command  your computer<br>
 
 Falta:<br>
 1 - Comentar o código<br>
-2 - Separar código em vários arquivos <br>
+2 - Corrigir bug que sai do sistema se o audio for muito grande <br>
 
 O que existe de novo<br>
 1 - Beep para ouvir o momento de falar o comando

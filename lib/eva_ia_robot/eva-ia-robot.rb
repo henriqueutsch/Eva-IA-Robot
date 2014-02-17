@@ -1,12 +1,15 @@
-#!/bin/env ruby
 # encoding: utf-8
 require "cgi"
 require 'open-uri'
 require 'json'
 require 'win32ole'
-
 require 'rbconfig'
 require 'fileutils'
+
+load 'eva-pergunta.rb'
+load 'eva-resposta.rb'
+load 'versao.rb'
+load 'os.rb'
 
 module HelloWorld
   def self.say
@@ -14,63 +17,108 @@ module HelloWorld
   end
 end
 
+
 shell = WIN32OLE.new('Shell.Application')
-
-
-
-def pergunta()
-	p 'gravando ...'
-	system('rec.exe -r 16000 test.flac silence -l 1 0.1 1% 1 1.5 1%')
-	p 'Enviando arquivo ...'
-	request = %x(wget.exe -q -U "rate=16000" -O - "http://www.google.com/speech-api/v1/recognize?lang=pt-BR&client=Mozilla/5.0" --post-file test.flac --header="Content-Type: audio/x-flac; rate=16000")
-	resposta = JSON.parse(request)
-	if resposta["status"] == 5
-		resposta("favor repêtir o comando")
-	else
-		resp = resposta["hypotheses"][0]["utterance"]
-		p resp
-		return resp
-	end
-
-end
-
-def resposta(texto)
-	texto = CGI::escape(texto)
-	url = 'http://translate.google.com/translate_tts?ie=UTF-8&tl=pt&q='+texto
-	  open("arquivo.mp3", "wb") do |file|
-	        file.write(open(url).read)
-	  end
-	system('play.exe arquivo.mp3')
-end
-
-  def os
-    @os ||= (
-      host_os = RbConfig::CONFIG['host_os']
-      case host_os
-      when /mswin|msys|mingw|cygwin|bccwin|wince|emc/
-        'windows'
-      when /darwin|mac os/
-        'macosx'
-      when /linux/
-        'linux'
-      when /solaris|bsd/
-        'unix'
-      else
-        raise Error::WebDriverError, "unknown os: #{host_os.inspect}"
-      end
-    )
+frase = ""
+feedback = true
+beep = true
+ 
+while frase !="sair" do
+  begin
+	p frase = pergunta(feedback,beep)
+  rescue =>e
+    puts e.message
   end
-while 1==1 do
-
-	p frase = pergunta()
 	if frase == 'eva'
 		resposta('pois não')
 	end
 
+  if frase == 'versão'
+    resposta(versao())
+  end
+
+  if frase == 'desativar'
+    resposta('sistema de resposta desativado')
+    feedback = false
+  end
+
+    if frase == 'ativar'
+    resposta('sistema de resposta ativado')
+    feedback = true
+  end
+
+  if frase == 'desativar som'
+    resposta('sistema de beep desativado')
+    beep = false
+  end
+
+    if frase == 'ativar som'
+    resposta('sistema de beep ativado')
+    beep = true
+  end
+
 	if frase == 'abrir chrome'
-		resposta('abrindo chrome')
+		resposta('abrindo krome')
 	shell.ShellExecute("chrome.exe", "", "", "open", 1)
 	end
+
+    if frase == 'que horas são'
+    resposta("são #{Time.now.hour.to_s} horas e #{Time.now.min.to_s} minutos")
+  end
+
+      if frase == 'que dia é hoje'
+    semana = ["","Segunda-feira","terça-feira","quarta-feira","quinta-feira","sexta-feira","sabado","domingo"]
+mes = ["","janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"]
+resposta("hoje é #{semana[Time.now.wday]} dia #{Time.now.day.to_s} de #{mes[Time.now.month]} de #{Time.now.year.to_s}")
+  end
+
+    if frase == 'abrir excel'
+    resposta('abrindo ekcel')
+  shell.ShellExecute("excel.exe", "", "", "open", 1)
+  end
+
+      if frase == 'finalizar excel'
+    resposta('finalizando ekcel')
+  system("taskkill /IM excel.exe")
+  end
+
+    if frase == 'abrir word'
+    resposta('abrindo word')
+  shell.ShellExecute("winword.exe", "", "", "open", 1)
+  end
+
+        if frase == 'finalizar word'
+    resposta('finalizando word')
+  system("taskkill /IM winword.exe")
+  end
+
+  if frase == 'abrir illustrator'
+  resposta('abrindo ilustreitor')
+  shell.ShellExecute("illustrator.exe", "", "", "open", 1)
+  end
+
+  if frase == 'finalizar illustrator'
+  resposta('finalizando ilustreitor')
+  system("taskkill /IM illustrator.exe")
+  end
+
+    if frase == 'abrir prompt'
+    resposta('abrindo prompt de comando')
+  shell.ShellExecute("cmd.exe", "", "", "open", 1)
+  end
+
+        if frase == 'finalizar prompt'
+    resposta('finalizando prompt')
+  system("taskkill /IM cmd.exe")
+  end
+
+
+      if frase == 'sair'
+    resposta('finalizando sistema de voz')
+    resposta('tênha um bom dia')
+  
+  end
+
 
 	if frase == 'sistema operacional'
 		resposta("seu sistema operacional é #{os()}")

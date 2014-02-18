@@ -1,4 +1,5 @@
  # encoding: utf-8
+ # verifica o sistema operacional e retorna o nome do sistema em formato texto
 require 'rbconfig'
 
  def os

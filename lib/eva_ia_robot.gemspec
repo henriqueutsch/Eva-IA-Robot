@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = "eva-ia-robot"
-  s.version     = "0.1.2"
+  s.version     = "0.1.3"
   s.description = "Gem integrada com Google Speech e Google Translate"
   s.summary     = "Command line"
   s.author      = "Henrique Utsch"

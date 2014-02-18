@@ -1,4 +1,8 @@
 # encoding: utf-8
+# comandos.conf 
+# caminho completo execução Dir.pwd
+# documentar caminho completo
+#  modulos do ruby para instalar basta abrir o prompt de comando e digitar "gem install [nome]" ex: "gem install win32ole"
 require "cgi"
 require 'open-uri'
 require 'json'
@@ -6,47 +10,71 @@ require 'win32ole'
 require 'rbconfig'
 require 'fileutils'
 
+# carrega os arquivos .rb tentei com require mas não funcionou
 load 'eva-pergunta.rb'
 load 'eva-resposta.rb'
 load 'versao.rb'
 load 'os.rb'
 
+# teste mas ainda não sei como vou fazer isso.
 module HelloWorld
   def self.say
     "Hello World!"
   end
 end
 
-
+# tentei abrir o programa pelo system() mas não funcionou direito o WIN32OLE é uma biblioteca "dll" do windows
 shell = WIN32OLE.new('Shell.Application')
+# inicializa configuração
 frase = ""
 feedback = true
 beep = true
- 
+
+ #  loop para ficar gravando o comando de voz repetidamente so sai do loop e finaliza o sistema se o comando "sair" for executado
 while frase !="sair" do
+  # se houver algum erro ele imprimi e continua o processamento
   begin
+    # chama o procedimento pergunta para gravar o audio 
+    # feedback true - habilita a resposta para repetir o comando
+    # feedback = false - desabilita a resposta para repetir o comndo
+    #  beep = true - habilita beep antes da gravação
+    #  beep = false - desabilita beep antes da gravação
+
+    #  a referência sobre a pergunta encontra-se no arquivo eva-pergunta.rb
 	p frase = pergunta(feedback,beep)
   rescue =>e
+    #  se houver erro simplesmente imprime
     puts e.message
   end
+
+  # OBSERVAÇÃO---------------------------------------
+  # Você pode alterar o valor de frase e de resposta.
+
+  # se a conversão do audio gravado em texto for igual a frase, ele executa os comandos e o feedback auditivo do sistema. 
 	if frase == 'eva'
+    # quando o usuário dar o comando eva o sitema responde falando "pois não"
+    # a referência sobre a resposta encontra-se no arquivo eva-resposta.rb
 		resposta('pois não')
 	end
 
   if frase == 'versão'
+    # recebe a verificação da versão do sistema
     resposta(versao())
   end
 
+  # desativa o feedback com o conteúdo "favor repetir o comando"
   if frase == 'desativar'
     resposta('sistema de resposta desativado')
     feedback = false
   end
 
-    if frase == 'ativar'
+  # ativa o feedback com o conteúdo "favor repetir o comando"
+  if frase == 'ativar'
     resposta('sistema de resposta ativado')
     feedback = true
   end
 
+   # desativa o feedback com o conteúdo "favor repetir o comando"
   if frase == 'desativar som'
     resposta('sistema de beep desativado')
     beep = false
@@ -83,42 +111,44 @@ resposta("hoje é #{semana[Time.now.wday]} dia #{Time.now.day.to_s} de #{mes[Tim
   end
 
     if frase == 'abrir word'
+      p "inicio execução #{Time.now}"
+        shell.ShellExecute("winword.exe", "", "", "open", 1)
     resposta('abrindo word')
-  shell.ShellExecute("winword.exe", "", "", "open", 1)
+    p "final execução #{Time.now}"
+
   end
 
-        if frase == 'finalizar word'
+  if frase == 'finalizar word'
+          system("taskkill /IM winword.exe")
     resposta('finalizando word')
-  system("taskkill /IM winword.exe")
+  
   end
 
   if frase == 'abrir illustrator'
-  resposta('abrindo ilustreitor')
-  shell.ShellExecute("illustrator.exe", "", "", "open", 1)
+    resposta('abrindo ilustreitor')
+    shell.ShellExecute("illustrator.exe", "", "", "open", 1)
   end
 
   if frase == 'finalizar illustrator'
-  resposta('finalizando ilustreitor')
-  system("taskkill /IM illustrator.exe")
+    resposta('finalizando ilustreitor')
+    system("taskkill /IM illustrator.exe")
   end
 
-    if frase == 'abrir prompt'
+  if frase == 'abrir prompt'
     resposta('abrindo prompt de comando')
-  shell.ShellExecute("cmd.exe", "", "", "open", 1)
+    shell.ShellExecute("cmd.exe", "", "", "open", 1)
   end
 
-        if frase == 'finalizar prompt'
+  if frase == 'finalizar prompt'
     resposta('finalizando prompt')
-  system("taskkill /IM cmd.exe")
+    system("taskkill /IM cmd.exe")
   end
 
-
-      if frase == 'sair'
+  if frase == 'sair'
     resposta('finalizando sistema de voz')
     resposta('tênha um bom dia')
   
   end
-
 
 	if frase == 'sistema operacional'
 		resposta("seu sistema operacional é #{os()}")

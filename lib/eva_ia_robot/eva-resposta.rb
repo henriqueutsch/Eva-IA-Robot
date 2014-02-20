@@ -1,3 +1,4 @@
+# encoding: utf-8
 # Esse código transforma texto em audio via api do google Translate
 require "cgi"
 require 'open-uri'
@@ -14,6 +15,10 @@ def resposta(texto)
 	  end
 	# system executa um comando no prompt 
 	# play.exe executa audio via linha de comando para não precisar de um player externo. 
-	system('play.exe -q arquivo.mp3')
+	if @showrecord == 'sim'
+	system('play.exe arquivo.mp3')
+		else
+		system('play.exe -q arquivo.mp3')
+	end
 end
 # resposta('abrindo chrome')

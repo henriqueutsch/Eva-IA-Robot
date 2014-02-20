@@ -1,17 +1,16 @@
 # encoding: utf-8
 # Esse código transforma audio em texto via api do google speech
-
 # Win32/sound modulo para tocar um beep via script
 require 'json'
 require 'win32/sound'
 include Win32
-load 'eva-resposta.rb'
+require './eva-resposta.rb'
 
-def pergunta(feedback,beep)
+def pergunta()
 # imprimi na tela um feedback visual de quando dar o comando verbal	
-	p 'gravando ...'
+	p 'EVA: gravando ...'
 	# verifica se a configuração auditiva para dar o comando verbal esta setada na configuração
-	if beep== true
+	if @beep == 'sim'
 	# Emite um som antes da gravação da voz
 	 Sound.beep(1500, 200)
 	end
@@ -19,9 +18,14 @@ def pergunta(feedback,beep)
 	# puts "inicio gravação #{Time.now}"
 	# utilizamos o sox que é um programa para gravar audio via linha de comando - no caso salva com o nome test.flac que é o formato do google
 	# silence -l significa que o rec.exe grava o audio e ao perceber o silencio finaliza a gravação e salva o arquivo ja no formato permitido pelo google speech
-	system('rec.exe -q -r 16000 test.flac silence -l 1 0.1 1% 1 1.5 1%')
+	if @showrecord == 'sim'
+	system('rec.exe -r 16000 test.flac silence -l 1 0.1 1% 1 1.5 1%')
+		else
+		system('rec.exe -q -r 16000 test.flac silence -l 1 0.1 1% 1 1.5 1%')
+	end
+
 	# feedback para o envio do arquivo para o google
-	p 'Enviando arquivo ...'
+	p 'EVA: Enviando arquivo ...'
 	# p "inicio envio #{Time.now}"
 	# envia o arquivo test.flac para o servidor e este retorna um json
 	# {\"status\":0,\"id\":\"\",\"hypotheses\":[{\"utterance\":\"abrir word\",\"confidence\":0.82485712}]}\n"
@@ -40,22 +44,27 @@ def pergunta(feedback,beep)
 	resposta = JSON.parse(request)
 	# puts "chegada resposta #{Time.now}"
 	rescue =>e
+		puts 'antes do rescue'
+		puts e
 		# se houver erro ele simplesmente exibe a mensagem de erro e continua o seu processamento normal
 		puts e.message
+		puts 'status'
+		puts resposta["status"]
+		puts 'erro no rescue'
 	end
 #  se o status for 5, quer dizer que o texto não foi reconhecido adequadamente então ele pede para repetir o comando caso contrario ele retorna o texto
 	if resposta["status"] == 5
 		# a variavel feedback controla se vai ter resposta por audio ou apenas visual
-		if feedback==true
+		if @feedback=='sim'
 		resposta("favor repêtir o comando")
 		else
-		puts "favor repetir o comando"
+		puts "EVA: Favor repetir o comando"
 	    end
 			
 	else
 		# pega apenas o texto do json
 		resp = resposta["hypotheses"][0]["utterance"]
-		puts resp
+		# puts resp
 		#  retorna o texto
 		return resp
 	end

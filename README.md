@@ -28,17 +28,35 @@ Sintax do arquivo eva.config:
 <pre><code>& fechar aplicativo
 $ executar módulo
 % abrir aplicativo
-#[COMANDOS DE VOZ]:[RESPOSTA OU MODULO]=>[ABRIR OU FECHAR PROGRAMA]
+#[COMANDOS DE VOZ]:[RESPOSTA OU MODULO]=>[ABRIR OU FECHAR PROGRAMA OU EXECUTAR MODULO]
 </code></pre>
 
 lista de módulos existentes:
-<pre><code>$os
+<pre><code>$hora
 $versao
 $data
-$hora
+$sistema
+$evaconfig
+$exit
+$beepoff
+$beepon
+$feedbackon
+$feedbackoff
+$showrecordon
+$showrecordoff
+$exibir comandos
+
+</code></pre>
+config.yml - Exemplo de configuração de variaveis:
+<pre><code>
+language: pt-br
+beep: nao
+feedback: nao
+showrecord: nao
+temporesposta: nao
 </code></pre>
 
-Exemplo de configuração:
+eva.config - Exemplo de configuração de comandos:
 <pre><code>#[abrir chrome]:[abrindo krome]=>[%chrome.exe]
 #[finalizar chrome]:[finalizando krome]=>[&chrome.exe]
 #[que horas são]:[$hora]=>[]

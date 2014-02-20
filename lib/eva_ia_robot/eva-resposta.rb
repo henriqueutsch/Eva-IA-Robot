@@ -1,4 +1,6 @@
 # Esse código transforma texto em audio via api do google Translate
+require "cgi"
+require 'open-uri'
 def resposta(texto)
 	#converte o texto para a requisição via url
 	texto = CGI::escape(texto)
@@ -12,5 +14,6 @@ def resposta(texto)
 	  end
 	# system executa um comando no prompt 
 	# play.exe executa audio via linha de comando para não precisar de um player externo. 
-	system('play.exe arquivo.mp3')
+	system('play.exe -q arquivo.mp3')
 end
+# resposta('abrindo chrome')

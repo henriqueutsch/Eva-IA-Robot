@@ -45,11 +45,10 @@ $feedbackoff
 $showrecordon
 $showrecordoff
 $exibir comandos
-
 </code></pre>
+
 config.yml - Exemplo de configuração de variaveis:
-<pre><code>
-language: pt-br
+<pre><code>language: pt-br
 beep: nao
 feedback: nao
 showrecord: nao
